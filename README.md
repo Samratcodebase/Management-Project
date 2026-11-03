@@ -19,8 +19,8 @@ npm run dev
 Open `/dashboard` and enter the dashboard convenience passcode to toggle the
 “Questions are welcome” pill on the final slide. The toggle is saved in that
 browser only; it does not provide secure authentication or change what other
-visitors see. For deployed sites, configure the static host to serve `index.html`
-for the `/dashboard` route.
+visitors see. The Vercel rewrite in `vercel.json` serves the app for both
+`/dashboard` and `/dashboard/`.
 
 ## Production build
 
