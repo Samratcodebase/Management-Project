@@ -98,8 +98,10 @@ export default function Dashboard({ questionsEnabled, onQuestionsEnabledChange }
           ) : mode !== "authenticated" ? (
             <>
               <p className="dashboard-eyebrow">Local admin · Dashboard</p>
-              <h1>Welcome back</h1>
+              <h1>Well-cum💦 Back</h1>
               <p className="dashboard-intro">
+                Pehle passcode, phir management wali bakchodi.
+                <br />
                 Enter the passcode to manage the presentation in this browser.
               </p>
               <form className="dashboard-form" onSubmit={handleSubmit}>

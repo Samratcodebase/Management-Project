@@ -133,6 +133,7 @@
     if(prev){prev.classList.remove('active');prev.classList.add('leaving');later(function(){ if(slides[cur]!==prev) prev.classList.remove('leaving');},560);}
     var s=slides[i];
     pend=later(function(){ if(cur===i){ s.classList.remove('leaving'); s.classList.add('active'); countUp(s); } }, prev?300:60);
+    if(matchMedia('(max-width: 760px) and (orientation: portrait)').matches) s.scrollTop=0;
     setDust(s.id==='s15');
     pose(i, instant);
     if(prev && sweep){ sweep.classList.remove('go'); void sweep.offsetWidth; sweep.classList.add('go'); }
@@ -144,8 +145,15 @@
 
   // scale stage
   var stage=document.getElementById('stage');
-  function fit2(){var k=Math.min(innerWidth/1920, innerHeight/1080); stage.style.left=((innerWidth-1920*k)/2)+'px'; stage.style.top=((innerHeight-1080*k)/2)+'px'; stage.style.transform='scale('+k+')';}
-  addEventListener('resize',fit2,{signal:signal}); fit2();
+  function fit2(){
+    if(matchMedia('(max-width: 760px) and (orientation: portrait)').matches){
+      stage.style.width='100vw'; stage.style.height='100dvh'; stage.style.left='0'; stage.style.top='0'; stage.style.transform='none';
+      return;
+    }
+    stage.style.width='1920px'; stage.style.height='1080px';
+    var k=Math.min(innerWidth/1920, innerHeight/1080); stage.style.left=((innerWidth-1920*k)/2)+'px'; stage.style.top=((innerHeight-1080*k)/2)+'px'; stage.style.transform='scale('+k+')';
+  }
+  addEventListener('resize',function(){fit2();fitTitles();gradChars();},{signal:signal}); fit2();
 
   document.addEventListener('keydown',function(e){
     if(e.repeat) return;
@@ -156,7 +164,7 @@
     else if(k==='f'||k==='F'){toggleFs();}
     wake();
   }, {signal:signal});
-  stage.addEventListener('click',function(){next();},{signal:signal});
+  stage.addEventListener('click',function(){if(!matchMedia('(pointer: coarse)').matches) next();},{signal:signal});
   document.getElementById('next').addEventListener('click',function(e){e.stopPropagation();next();},{signal:signal});
   document.getElementById('prev').addEventListener('click',function(e){e.stopPropagation();prev();},{signal:signal});
   document.getElementById('fs').addEventListener('click',function(e){e.stopPropagation();toggleFs();},{signal:signal});
@@ -168,7 +176,8 @@
 
   // idle: hide HUD + cursor
   var hud=document.getElementById('hud'), hint=document.getElementById('hint'), t;
-  function wake(){hud.classList.remove('hide');stage.classList.remove('idle');cancelLater(t);t=later(function(){hud.classList.add('hide');stage.classList.add('idle');},2600);}
+  function wake(){hud.classList.remove('hide');stage.classList.remove('idle');cancelLater(t);if(!matchMedia('(pointer: coarse)').matches)t=later(function(){hud.classList.add('hide');stage.classList.add('idle');},2600);}
+  addEventListener('pointerdown',wake,{signal:signal});
   addEventListener('mousemove',wake,{signal:signal}); wake();
   later(function(){hint.classList.add('gone');},5000);
 

@@ -362,3 +362,176 @@ p{margin:0}
   .slide.active,.slide.leaving,#s1 h1,.tyb{animation:none!important}
   .ob>.fl,.ob img,.lens>i,#world,#sweep,.glass::after,.grad,.wire .pulse,.orbit,.tp .dot::after,.badge,.lvl.top{animation:none!important}
 }
+
+@media (max-width: 760px) and (orientation: portrait){
+  #stage{width:100vw;height:100dvh;left:0;top:0;transform:none;perspective:none}
+  #world,.ob,.lens,#grain,#vignette,#sweep{display:none}
+  .slide{
+    inset:0;
+    min-height:100%;
+    height:auto;
+    overflow-y:auto;
+    overflow-x:hidden;
+    overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding:calc(88px + env(safe-area-inset-top,0px)) 20px calc(112px + env(safe-area-inset-bottom,0px));
+    touch-action:pan-y;
+  }
+  .slide::-webkit-scrollbar{display:none}
+  #stage .slide .disp{font-size:clamp(30px,9vw,48px);line-height:1.08;overflow-wrap:normal}
+  .eyebrow{font-size:12px;letter-spacing:.14em}
+  .active .eyebrow.r{letter-spacing:.14em}
+  .lede{font-size:18px;line-height:1.55}
+  .glass{border-radius:20px;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+  .card{padding:22px;gap:10px}
+  .card h3{font-size:20px}
+  .card p{font-size:15px;line-height:1.5;margin:0}
+  .tag{font-size:12px;letter-spacing:.12em}
+
+  .chrome.top{
+    left:12px;
+    right:12px;
+    top:calc(10px + env(safe-area-inset-top,0px));
+    gap:8px;
+  }
+  .chrome.top .pill{
+    min-width:0;
+    height:34px;
+    padding:0 10px;
+    gap:7px;
+    font-size:9px;
+    letter-spacing:.04em;
+    white-space:nowrap;
+  }
+  .chrome.top .pill:first-child{flex:1}
+  .chrome.top .pill:last-child{max-width:46%;overflow:hidden;text-overflow:ellipsis}
+  .chrome.top .live{width:7px;height:7px;flex:none}
+  .chrome.bot{bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+  .dock{height:42px;padding:0 14px;gap:10px;font-size:12px}
+  #who{min-width:0;max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #segs{display:none}
+  #counter{min-width:54px;font-size:11px}
+  #hud{
+    right:auto;
+    left:50%;
+    bottom:calc(62px + env(safe-area-inset-bottom,0px));
+    gap:10px;
+    transform:translateX(-50%);
+  }
+  #hud button{min-width:44px;min-height:44px;padding:10px 12px;font-size:12px}
+  #hint{display:none}
+
+  #s1{justify-content:flex-start;padding-top:clamp(150px,28vh,240px)}
+  #s1 .sub{gap:18px;margin-top:24px}
+  #s1 .names{font-size:15px;line-height:1.8}
+  #s1 .kick{font-size:20px}
+
+  #s2 .grid,#s6 .cols,#s9 .wrap,#s14 .lim{grid-template-columns:minmax(0,1fr);gap:22px;margin-top:24px}
+  #s2 .disp{font-size:clamp(30px,9vw,48px)}
+  #s2 .grid>div[style]{gap:18px!important;padding-top:0!important}
+  .origin{margin-top:22px;padding:18px;font-size:15px;line-height:1.55}
+  .chips{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .chip{gap:9px;padding:14px 12px;border-radius:16px;font-size:13px}
+  .chip i{width:8px;height:8px}
+
+  .feat,.three,.styles,.adv,.two,.xy{grid-template-columns:minmax(0,1fr);gap:14px;margin-top:24px}
+  .feat .card{min-height:0}
+  .feat .last h3{font-size:22px}
+  .vs{grid-template-columns:minmax(0,1fr);gap:10px;margin-top:24px}
+  .vs .h{display:none}
+  .vs .arr{width:24px;height:24px;transform:rotate(90deg)}
+  .old,.new{font-size:15px}
+  .new{padding:14px 16px}
+  .win{font-size:14px}
+  .fair{margin-top:22px;font-size:15px;line-height:1.5}
+
+  .tl{height:auto;margin-top:24px;padding-left:4px}
+  .tl .rail{display:none}
+  .tp{
+    position:relative;
+    inset:auto;
+    left:auto!important;
+    top:auto!important;
+    width:auto;
+    display:grid;
+    grid-template-columns:72px 18px minmax(0,1fr);
+    grid-template-areas:"year dot title" ". dot text";
+    align-items:center;
+    gap:4px 10px;
+    padding:14px 0;
+    border-bottom:1px solid rgba(255,255,255,.1);
+  }
+  .tp .yr{grid-area:year;height:auto;font-size:13px}
+  .tp .dot{grid-area:dot;width:12px;height:12px;margin:0}
+  .tp h3{grid-area:title;font-size:15px}
+  .tp p{grid-area:text;margin:0;font-size:13px}
+
+  .person .quote{font-size:22px;margin-top:14px}
+  #s6 .hawk{padding:20px}
+  #s6 .hawk .big{font-size:40px}
+  #s6 .chart{width:100%;height:auto}
+  .rows{gap:10px}
+  .row{gap:12px;padding:16px;font-size:15px}
+  .ic{width:42px;height:42px}
+  .ic svg{width:22px;height:22px}
+  .pw{align-items:flex-start;flex-direction:column;gap:4px;margin-top:20px}
+  .pw .over{font-size:32px}
+  .pw .with{font-size:42px}
+  .three .card{min-height:0}
+
+  #s8 .net{height:auto;display:grid;gap:12px;margin-top:20px}
+  #s8 .wire{display:none}
+  #s8 .node{
+    position:relative;
+    inset:auto;
+    left:auto!important;
+    top:auto!important;
+    right:auto!important;
+    bottom:auto!important;
+    width:auto;
+    margin:0;
+    align-items:flex-start;
+    text-align:left;
+    gap:8px;
+    padding:16px;
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:18px;
+    background:rgba(255,255,255,.04);
+  }
+  #s8 .orb{width:60px;height:60px}
+  #s8 .orb svg{width:28px;height:28px}
+  #s8 .node h3{font-size:16px;margin:0}
+  #s8 .node p{font-size:14px;margin:0}
+  #s8 .accept{align-items:flex-start;flex-direction:column;gap:10px;margin-top:16px;padding:18px}
+  #s8 .accept p{font-size:15px;margin:0}
+
+  #s9 .pyr{display:none}
+  #s9 .needs{gap:0}
+  #s9 .need{height:auto;min-height:74px;padding:12px 0}
+  #s9 .need b{font-size:16px}
+  #s9 .need span{font-size:13px;line-height:1.5}
+  .two .card,.styles .card{padding:22px;min-height:0}
+  .two .card.r,.xy .card.r{transform:none!important}
+  .two .verdict{font-size:24px}
+  .two li,.xy li{font-size:15px}
+  .xy .card{gap:16px;padding:20px}
+  .L{width:72px;font-size:clamp(72px,22vw,96px)}
+  .xy .card>div{min-width:0}
+
+  #s14 .lim{margin-top:22px}
+  .lims div{gap:14px;padding:16px 0;font-size:15px}
+  .lims .num{font-size:15px}
+  .thanks{align-self:stretch;padding:22px;gap:14px}
+  .thanks .ty{font-size:42px}
+
+  #s15{justify-content:flex-start;gap:32px;padding-top:clamp(100px,18vh,150px)}
+  #s15 .orbitWrap{display:none}
+  #s15 .fin{gap:14px;margin-top:12px}
+  #s15 .tyb{font-size:clamp(46px,13vw,64px)}
+  #s15 .finsub{font-size:16px}
+  #s15 .qa{height:46px;padding:0 18px;font-size:13px}
+  #s15 .crew{gap:12px}
+  #s15 .crew .names{gap:8px}
+  #s15 .nm{padding:9px 14px;font-size:13px}
+}
