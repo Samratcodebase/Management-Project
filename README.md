@@ -14,6 +14,14 @@ npm install
 npm run dev
 ```
 
+## Local presentation dashboard
+
+Open `/dashboard` and enter the dashboard convenience passcode to toggle the
+“Questions are welcome” pill on the final slide. The toggle is saved in that
+browser only; it does not provide secure authentication or change what other
+visitors see. For deployed sites, configure the static host to serve `index.html`
+for the `/dashboard` route.
+
 ## Production build
 
 ```bash
