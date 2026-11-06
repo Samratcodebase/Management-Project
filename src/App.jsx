@@ -1,171 +1,132 @@
-import { memo, useEffect, useMemo, useState } from "react";
-import parse, { attributesToProps, domToReact } from "html-react-parser";
-import Dashboard from "./Dashboard.jsx";
-import "./styles.css";
-import markup from "./markup.html?raw";
-
-const QUESTIONS_ENABLED_KEY = "neoClassicalQuestionsEnabled";
-
-/** A single presentation slide. Its source copy and inner markup stay untouched. */
-const Slide = memo(function Slide(props) {
-  return <section {...props}>{props.children}</section>;
-});
-
-function createParserOptions(questionsEnabled) {
-  const options = {
-    replace(node) {
-      if (
-        node.type === "tag" &&
-        node.name === "span" &&
-        node.attribs?.class?.split(/\s+/).includes("qa") &&
-        !questionsEnabled
-      ) {
-        return <></>;
-      }
-
-      if (
-        node.type === "tag" &&
-        node.name === "section" &&
-        node.attribs?.class?.split(/\s+/).includes("slide")
-      ) {
-        const props = attributesToProps(node.attribs);
-        return (
-          <Slide key={props.id} {...props}>
-            {domToReact(node.children, options)}
-          </Slide>
-        );
-      }
-      return undefined;
-    },
-  };
-  return options;
-}
-
-function Presentation({ questionsEnabled }) {
-  const parserOptions = useMemo(
-    () => createParserOptions(questionsEnabled),
-    [questionsEnabled],
-  );
-  const presentation = useMemo(
-    () => parse(markup, parserOptions),
-    [parserOptions],
-  );
-
-  /**
-   * React owns the slide tree and page lifecycle. The legacy animation engine
-   * remains isolated because it choreographs the existing DOM directly.
-   */
-  useEffect(() => {
-    let cancelled = false;
-    let script;
-
-    const frame = requestAnimationFrame(() => {
-      if (cancelled) return;
-      script = document.createElement("script");
-      script.src = "/presentation-engine.js";
-      script.async = true;
-      script.dataset.presentationEngine = "true";
-      document.body.appendChild(script);
-    });
-
-    return () => {
-      cancelled = true;
-      cancelAnimationFrame(frame);
-      window.__presentationDestroy?.();
-      script?.remove();
-    };
-  }, []);
-
-  return <main className="presentation-root">{presentation}</main>;
-}
-
-function NotFound() {
-  return (
-    <main className="dashboard-page">
-      <section className="dashboard-card">
-        <p className="dashboard-eyebrow">404 · Page not found</p>
-        <h1>That page doesn’t exist.</h1>
-        <a className="dashboard-link" href="/">
-          Return to presentation
-        </a>
-      </section>
-    </main>
-  );
-}
+import { useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { Clock3, Sparkles } from "lucide-react";
+import "./App.css";
 
 export default function App() {
-  const [pathname, setPathname] = useState(window.location.pathname);
-  const [questionsEnabled, setQuestionsEnabled] = useState(true);
-  const [settingsLoaded, setSettingsLoaded] = useState(false);
-  const [settingsError, setSettingsError] = useState("");
+  const cardRef = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
 
-  useEffect(() => {
-    const syncPath = () => setPathname(window.location.pathname);
-    window.addEventListener("popstate", syncPath);
-    return () => window.removeEventListener("popstate", syncPath);
-  }, []);
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
 
-  useEffect(() => {
-    try {
-      const savedValue = window.localStorage.getItem(QUESTIONS_ENABLED_KEY);
-      if (savedValue !== null && savedValue !== "true" && savedValue !== "false") {
-        throw new Error("The saved display setting is invalid.");
-      }
-      setQuestionsEnabled(savedValue !== "false");
-    } catch (error) {
-      setSettingsError(
-        error instanceof Error ? error.message : "Could not read the saved setting.",
-      );
-    } finally {
-      setSettingsLoaded(true);
-    }
+    const rect = cardRef.current.getBoundingClientRect();
 
-    const syncSetting = (event) => {
-      if (event.key !== QUESTIONS_ENABLED_KEY) return;
-      setQuestionsEnabled(event.newValue !== "false");
-    };
-    window.addEventListener("storage", syncSetting);
-    return () => window.removeEventListener("storage", syncSetting);
-  }, []);
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
 
-  const updateQuestionsEnabled = (nextValue) => {
-    try {
-      window.localStorage.setItem(QUESTIONS_ENABLED_KEY, String(nextValue));
-      setQuestionsEnabled(nextValue);
-      setSettingsError("");
-      return "";
-    } catch (error) {
-      return error instanceof Error
-        ? error.message
-        : "Could not save the display setting.";
-    }
+    setTilt({
+      x: (0.5 - y) * 8,
+      y: (x - 0.5) * 8,
+    });
   };
 
-  if (pathname === "/dashboard" || pathname === "/dashboard/") {
-    return (
-      <Dashboard
-        questionsEnabled={questionsEnabled}
-        onQuestionsEnabledChange={updateQuestionsEnabled}
-      />
-    );
-  }
+  const resetTilt = () => setTilt({ x: 0, y: 0 });
 
-  if (pathname !== "/") return <NotFound />;
+  return (
+    <main className="page">
+      <div className="ambient ambient-one" />
+      <div className="ambient ambient-two" />
 
-  if (!settingsLoaded) {
-    return <main className="presentation-root" aria-busy="true" />;
-  }
+      <motion.section
+        ref={cardRef}
+        className="glass-card"
+        onMouseMove={handleMouseMove}
+        onMouseLeave={resetTilt}
+        initial={{ opacity: 0, y: 40, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.9, ease: "easeOut" }}
+        style={{
+          transform: `perspective(1200px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg)`,
+        }}
+      >
+        <div className="glass-shine" />
 
-  if (settingsError) {
-    return (
-      <main className="dashboard-page">
-        <section className="dashboard-card" role="alert">
-          <h1>Could not load the presentation setting</h1>
-          <p>{settingsError}</p>
-        </section>
-      </main>
-    );
-  }
+        <div className="jar-section">
+          <motion.div
+            className="jar-scene"
+            animate={{ y: [0, -12, 0], rotateZ: [-2, 2, -2] }}
+            transition={{
+              duration: 5,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          >
+            <div className="spoon">
+              <div className="spoon-handle" />
+              <div className="spoon-head" />
+              <div className="ghee-drop" />
+            </div>
 
-  return <Presentation questionsEnabled={questionsEnabled} />;
+            <div className="jar-lid" />
+
+            <div className="jar">
+              <div className="jar-neck" />
+              <div className="jar-glass">
+                <div className="ghee-liquid">
+                  <div className="liquid-shine" />
+                </div>
+                <div className="jar-label">Ghee</div>
+                <div className="jar-reflection" />
+              </div>
+            </div>
+
+            <div className="jar-shadow" />
+            <div className="jar-glow" />
+          </motion.div>
+        </div>
+
+        <div className="content-section">
+          <div className="status">
+            <span className="status-dot" />
+            TEMPORARILY UNAVAILABLE
+          </div>
+
+          <h1>
+            Owner is out for
+            <span>Ghee Refill!</span>
+          </h1>
+
+          <p className="description">
+            Our owner has temporarily stepped away to refill the Ghee. We're
+            waiting for their return.
+          </p>
+
+          <motion.div
+            className="waiting-pill"
+            animate={{ opacity: [0.75, 1, 0.75] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <div className="loading-dots">
+              <span />
+              <span />
+              <span />
+            </div>
+            <strong>Please wait patiently!</strong>
+          </motion.div>
+
+          <p className="tagline">
+            Good things take time.
+            <br />
+            Especially fresh Ghee.
+          </p>
+
+          <div className="footer-message">
+            <Clock3 size={19} />
+            <span>We'll be back soon.</span>
+          </div>
+        </div>
+
+        <div className="corner-icon">
+          <Sparkles size={19} />
+        </div>
+      </motion.section>
+
+      <div className="bottom-note">
+        <span>MADE WITH</span>
+        <span className="heart">♥</span>
+        <span>AND A LITTLE BIT OF GHEE</span>
+      </div>
+    </main>
+  );
 }

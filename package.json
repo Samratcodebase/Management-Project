@@ -10,10 +10,11 @@
   },
   "dependencies": {
     "@vitejs/plugin-react": "latest",
-    "vite": "latest",
+    "framer-motion": "^14.10.1",
+    "html-react-parser": "^5.2.6",
+    "lucide-react": "^1.70.0",
     "react": "latest",
     "react-dom": "latest",
-    "html-react-parser": "^5.2.6"
-  },
-  "devDependencies": {}
+    "vite": "latest"
+  }
 }
